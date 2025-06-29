@@ -1,7 +1,7 @@
 using System;
 using FlaxEngine;
 
-namespace FlaxTasks
+namespace FlaxTasksPlugin
 {
     /// <summary>
     /// The sample game plugin.

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FlaxEngine;
 
-namespace FlaxTasks;
+namespace FlaxTasksPlugin;
 
 /// <summary>
 /// FlaxTasks class.
@@ -28,12 +28,37 @@ public static class FlaxTasks
         }
     }
 
+    /// <summary>
+    /// Waits while <paramref name="condition"/> evaluates to true.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="cancellation"></param>
+    /// <returns></returns>
+    /// <exception cref="TaskCanceledException"></exception>
     public static async Task WaitWhile(Func<bool> condition, CancellationToken? cancellation = null) {
+        bool done = false;
+        Action action = () => done = !condition();
+
+        while (!done) {
+            if (cancellation is CancellationToken validToken && validToken.IsCancellationRequested) throw new TaskCanceledException();
+
+            await Scripting.RunOnUpdate(action);
+        }
+    }
+
+    /// <summary>
+    /// Waits until condition fails.
+    /// </summary>
+    /// <param name="condition"></param>
+    /// <param name="cancellation"></param>
+    /// <returns></returns>
+    /// <exception cref="TaskCanceledException"></exception>
+    public static async Task WaitUntil(Func<bool> condition, CancellationToken? cancellation = null) {
         bool done = false;
         Action action = () => done = condition();
 
         while (!done) {
-            if (cancellation is CancellationToken validToken && validToken.IsCancellationRequested) return;
+            if (cancellation is CancellationToken validToken && validToken.IsCancellationRequested) throw new TaskCanceledException();
 
             await Scripting.RunOnUpdate(action);
         }

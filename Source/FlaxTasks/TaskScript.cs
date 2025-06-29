@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using FlaxEngine;
 
-namespace FlaxTasks;
+namespace FlaxTasksPlugin;
 
 /// <summary>
 /// Script suitable for using <see cref="FlaxTasks"/>.
@@ -17,6 +17,7 @@ public class TaskScript : Script
     /// </summary>
     public CancellationToken DestroyedCancellationToken => destroyedCancellationSource.Token;
 
+    /// <inheritdoc/>
     public override void OnDestroy() {
         destroyedCancellationSource.Cancel();
     }
